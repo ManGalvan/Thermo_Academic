@@ -12,7 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Thermo_Academic">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.temperature.TemperatureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

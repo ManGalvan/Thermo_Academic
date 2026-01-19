@@ -1,22 +1,17 @@
 package com.example.thermo_academic.ui.temperature
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.thermo_academic.R
-import com.example.thermo_academic.viewmodel.TemperatureViewModel
 import com.example.thermo_academic.utils.TemperatureUtils
+import com.example.thermo_academic.ui.temperature.TemperatureUiState
+import com.example.thermo_academic.viewmodel.TemperatureViewModel
 
 class TemperatureActivity : AppCompatActivity() {
 
@@ -27,7 +22,6 @@ class TemperatureActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_temperature)
 
-        // edge-to-edge insets padding
         val mainView: View = findViewById(R.id.main)
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -44,39 +38,47 @@ class TemperatureActivity : AppCompatActivity() {
 
         // ViewModel
         viewModel = ViewModelProvider(this)[TemperatureViewModel::class.java]
-        viewModel.resultText.observe(this) { text ->
-            txtResult.text = "Resultado: $text"
+
+        viewModel.uiState.observe(this) { state ->
+            when (state) {
+                is TemperatureUiState.Success -> {
+                    txtResult.text = "Resultado: ${state.result}"
+                    edtValue.error = null
+                }
+
+                is TemperatureUiState.Error -> {
+                    edtValue.error = state.message
+                    edtValue.requestFocus()
+                }
+            }
         }
 
-        // Spinner adapter (units)
-        val units = arrayOf(TemperatureUtils.C, TemperatureUtils.F, TemperatureUtils.K)
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, units)
+        // Spinner adapter
+        val units = arrayOf(
+            TemperatureUtils.C,
+            TemperatureUtils.F,
+            TemperatureUtils.K
+        )
+
+        val adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            units
+        )
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerFrom.adapter = adapter
         spinnerTo.adapter = adapter
 
-        // Default selection
         spinnerFrom.setSelection(0) // Celsius
         spinnerTo.setSelection(1)   // Fahrenheit
 
-        // Convert button click
         btnConvert.setOnClickListener {
-            val raw = edtValue.text.toString().trim()
-            if (raw.isEmpty()) {
-                Toast.makeText(this, "Ingresa un número", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val value = raw.toDoubleOrNull()
-            if (value == null) {
-                Toast.makeText(this, "Valor inválido", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
+            val raw = edtValue.text.toString()
             val from = spinnerFrom.selectedItem as String
             val to = spinnerTo.selectedItem as String
 
-            viewModel.convert(value, from, to)
+            viewModel.convert(raw, from, to)
         }
     }
 }

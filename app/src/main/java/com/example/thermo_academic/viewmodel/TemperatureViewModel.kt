@@ -3,26 +3,28 @@ package com.example.thermo_academic.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.thermo_academic.ui.temperature.TemperatureUiState
 import com.example.thermo_academic.utils.TemperatureUtils
-import java.text.DecimalFormat
 
 class TemperatureViewModel : ViewModel() {
 
-    private val _resultText = MutableLiveData<String>()
-    val resultText: LiveData<String> = _resultText
+    private val _uiState = MutableLiveData<TemperatureUiState>()
+    val uiState: LiveData<TemperatureUiState> = _uiState
 
-    private val df = DecimalFormat("#.####") // 4 decimales
+    fun convert(rawInput: String, from: String, to: String) {
 
-    fun convert(value: Double, from: String, to: String) {
-        try {
-            val res = TemperatureUtils.convert(value, from, to)
-            _resultText.value = "${df.format(res)} $to"
-        } catch (e: Exception) {
-            _resultText.value = "Error: ${e.message}"
+        if (rawInput.isBlank()) {
+            _uiState.value = TemperatureUiState.Error("Ingresa un número")
+            return
         }
-    }
 
-    fun clearResult() {
-        _resultText.value = "Resultado: —"
+        val value = rawInput.toDoubleOrNull()
+        if (value == null) {
+            _uiState.value = TemperatureUiState.Error("Valor inválido")
+            return
+        }
+
+        val result = TemperatureUtils.convert(value, from, to)
+        _uiState.value = TemperatureUiState.Success(result)
     }
 }

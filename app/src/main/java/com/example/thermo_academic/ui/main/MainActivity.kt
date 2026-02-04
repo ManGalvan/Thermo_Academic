@@ -10,6 +10,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.thermo_academic.R
 import com.example.thermo_academic.ui.temperature.TemperatureActivity
+import com.example.thermo_academic.ui.water.WaterActivity
+
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +32,12 @@ class MainActivity : AppCompatActivity() {
         val btnEnergia = findViewById<Button>(R.id.btnEnergia)
         btnEnergia.setOnClickListener {
             Toast.makeText(this, "Energía seleccionado", Toast.LENGTH_SHORT).show()
+        }
+
+        val btnWater = findViewById<Button>(R.id.btnWater)
+        btnWater.setOnClickListener {
+            val intent = Intent(this, WaterActivity::class.java)
+            startActivity(intent)
         }
     }
 }

@@ -61,4 +61,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/btnWater"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Tabla de Agua"
+        app:layout_constraintTop_toBottomOf="@id/btnEnergia"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

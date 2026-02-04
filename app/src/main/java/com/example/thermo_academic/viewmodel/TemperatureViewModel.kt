@@ -3,6 +3,7 @@ package com.example.thermo_academic.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.thermo_academic.repository.WaterTableRepository
 import com.example.thermo_academic.ui.temperature.TemperatureUiState
 import com.example.thermo_academic.utils.TemperatureUtils
 
